@@ -9,7 +9,6 @@
 // @require    http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js
 // @require    http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.2.0/ui-bootstrap-tpls.js
 // @require    http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
-// @require    https://raw.github.com/markmalek/Fixed-Header-Table/master/jquery.fixedheadertable.min.js
 // @resource   cf file:///Users/andras/projects/ikariam/gather.coffee
 // @resource   view file:///Users/andras/projects/ikariam/render.html
 // @copyright  2013+, Andras Suller
