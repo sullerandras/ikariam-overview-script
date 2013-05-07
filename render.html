@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ikariam overview</title>
+	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+	<style type="text/css">
+		.io-progress {
+			height: 4px;
+			margin-bottom: 0;
+		}
+		.fullness-percent {
+			padding-left: 10px;
+			font-size: 70%;
+		}
+		.production { font-weight: bold; }
+	</style>
+</head>
+<body ng-controller="AppController">
+	<label class="checkbox"><input type="checkbox" ng-model="show_buildings"> Show buildings</label>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th ng-repeat="city in cities">
+					<img ng-src="http://{{domain}}/skin/resources/icon_{{city.tradegood_name()}}.png">
+					{{city.name}}
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>Coords</th>
+				<td ng-repeat="city in cities">{{city.coords}}</td>
+			</tr>
+			<tr>
+				<th>Population</th>
+				<td ng-repeat="city in cities"><nobr>
+					{{city.currentResources.citizens | number:0}} /
+					{{city.currentResources.population | number:0}}</nobr></td>
+			</tr>
+			<tr ng-repeat="resource_id in ['resource', 1, 2, 3, 4]">
+				<th><img ng-src="http://{{domain}}/skin/resources/icon_{{TRADEGOOD_NAMES[resource_id]}}.png"></th>
+				<td ng-repeat="city in cities">
+					<span class="amount" ng-class="city.amount_class(resource_id)">{{city.resource_amount(resource_id, time) | number}}</span>
+					<span class="fullness-percent">{{city.percent_full(resource_id, time)}}%</span>
+					<div class="progress io-progress" ng-class="city.fullness_class(resource_id, time)">
+						<div class="bar" style="width: {{city.percent_full(resource_id, time)}}%"></div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody ng-show="show_buildings">
+			<tr ng-repeat="building_id in BUILDINGS">
+				<th>{{building_id}}</th>
+				<td ng-repeat="city in cities">{{city.buildings[building_id].level}}</td>
+			</tr>
+		</tbody>
+	</table>
+
+<!--
+	<table class="table">
+		<tr>
+			<th>Name</th>
+			<th>Coords</th>
+			<th><img ng-src="http://{{domain}}/skin/resources/icon_wood.png"></th>
+			<th><img ng-src="http://{{domain}}/skin/resources/icon_wine.png"></th>
+			<th><img ng-src="http://{{domain}}/skin/resources/icon_marble.png"></th>
+			<th><img ng-src="http://{{domain}}/skin/resources/icon_glass.png"></th>
+			<th><img ng-src="http://{{domain}}/skin/resources/icon_sulfur.png"></th>
+			<th ng-repeat="building_id in BUILDINGS">
+				{{building_id}}
+			</th>
+		</tr>
+		<tr ng-repeat="city in cities">
+			<td><img ng-src="http://{{domain}}/skin/resources/icon_{{city.tradegood_name()}}.png">
+				{{city.name}}</td>
+			<td>{{city.coords}}</td>
+			<td ng-repeat="resource_id in ['resource', 1, 2, 3, 4]">
+				<span class="amount">{{city.currentResources[resource_id]}}</span><span class="fullness-percent">{{city.percent_full(resource_id)}}%</span>
+				<div class="progress io-progress" ng-class="city.fullness_class(resource_id)">
+					<div class="bar" style="width: {{city.percent_full(resource_id)}}%"></div>
+				</div>
+			</td>
+			<td ng-repeat="building_id in BUILDINGS">
+				{{city.buildings[building_id].level}}
+			</td>
+		</tr>
+	</table>
+-->
+</body>
+</html>
