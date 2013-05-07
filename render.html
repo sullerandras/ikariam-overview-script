@@ -41,9 +41,14 @@
 			<tr ng-repeat="resource_id in ['resource', 1, 2, 3, 4]">
 				<th><img ng-src="http://{{domain}}/skin/resources/icon_{{TRADEGOOD_NAMES[resource_id]}}.png"></th>
 				<td ng-repeat="city in cities">
-					<span class="amount" ng-class="city.amount_class(resource_id)">{{city.resource_amount(resource_id, time) | number}}</span>
-					<span class="fullness-percent">{{city.percent_full(resource_id, time)}}%</span>
-					<div class="progress io-progress" ng-class="city.fullness_class(resource_id, time)">
+					<span class="amount"
+						ng-class="city.amount_class(resource_id)">
+						{{city.resource_amount(resource_id, time) | number}}</span>
+					<span class="fullness-percent"
+						tooltip="{{city.progress_bar_tooltip(resource_id, time)}}">
+						{{city.delta_per_hour(resource_id, time) | signed_number}}</span>
+					<div class="progress io-progress"
+						ng-class="city.fullness_class(resource_id, time)">
 						<div class="bar" style="width: {{city.percent_full(resource_id, time)}}%"></div>
 					</div>
 				</td>

@@ -25,6 +25,27 @@ class City
 		TRADEGOOD_NAMES[@tradegood]
 	percent_full: (resource_id, time)->
 		Math.floor @resource_amount(resource_id, time) * 100 / @maxResources[resource_id]
+	delta_per_hour: (resource_id, time)->
+		spending_per_hour = if ''+resource_id == '1' then @wineSpendings else 0
+		@production_for_resource(resource_id) * 3600 - spending_per_hour
+	time_to_full: (resource_id, time)->
+		current = @resource_amount resource_id, time
+		max = @maxResources[resource_id]
+		delta_per_hour = @delta_per_hour resource_id, time
+		if delta_per_hour > 0
+			Math.floor((max - current) / delta_per_hour)
+		else if delta_per_hour < 0
+			Math.floor(current / delta_per_hour)
+		else
+			0
+	progress_bar_tooltip: (resource_id, time)->
+		ttf = @time_to_full resource_id, time
+		if ttf > 0
+			ttf + ' hour to full'
+		else if ttf < 0
+			(-ttf) + ' hour to empty'
+		else
+			''
 	fullness_class: (resource_id, time)->
 		percent = @percent_full resource_id, time
 		if percent >= 90
@@ -150,7 +171,14 @@ render = (domain)->
 	view = GM_getResourceText('view')
 	document.body.parentElement.innerHTML = view
 
-	app = angular.module 'MyApp', ['ui.bootstrap']
+	app = angular.module('MyApp', ['ui.bootstrap']).
+		filter 'signed_number', ->
+			return (input)->
+				value = Math.round input
+				if input > 0
+					'+' + value
+				else if input < 0
+					value
 	window.AppController = (scope, $timeout)->
 		scope.show_buildings = true
 		scope.domain = domain
@@ -160,7 +188,10 @@ render = (domain)->
 			new City city_props
 		scope.time = 1 * new Date()
 		window.setInterval ->
-			scope.$apply(-> scope.time = 1 * new Date())
+			scope.$apply ->
+				scope.time = 1 * new Date()
+				# scope.cities = new Config().config.cities.map (city_props)->
+				# 	new City city_props
 		, 5000
 	window.AppController.$inject = ['$scope', '$timeout']
 	angular.bootstrap document, ['MyApp']
