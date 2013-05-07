@@ -10,4 +10,4 @@ How to use
 
 *   Open your Ikariam server in a tab: [http://ikariam.com](http://ikariam.com/). In my case it is [http://s5.hu.ikariam.com](http://s5.hu.ikariam.com).
 
-*   Open the overview table in an other tab, for example http://google.it/&lt;ikariam domain&gt;. In my case it is [http://google.it/s5.hu.ikariam.com](http://google.it/s5.hu.ikariam.com).
+*   Open the overview table in an other tab, for example http://google.it/<ikariam domain>. In my case it is [http://google.it/s5.hu.ikariam.com](http://google.it/s5.hu.ikariam.com).
