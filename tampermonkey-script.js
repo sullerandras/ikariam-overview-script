@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name       Ikariam
+// @name       Ikariam overview table 2
 // @namespace  http://github.com/sullerandras
 // @version    0.1
 // @description  Collects information about the Ikariam game, and displays it in a nice table format.
@@ -9,8 +9,8 @@
 // @require    http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js
 // @require    http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.2.0/ui-bootstrap-tpls.js
 // @require    http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
-// @resource   cf file:///Users/andras/projects/ikariam/gather.coffee
-// @resource   view file:///Users/andras/projects/ikariam/render.html
+// @resource   cf https://raw.github.com/sullerandras/ikariam-overview-script/master/gather.coffee
+// @resource   view https://raw.github.com/sullerandras/ikariam-overview-script/master/render.html
 // @copyright  2013+, Andras Suller
 // ==/UserScript==
 
