@@ -111,17 +111,17 @@ gatherData = (domain)->
 		c.freeTransporters = m.freeTransporters
 
 	if m.isOwnCity
-		city = config.getCity(m.relatedCityData.selectedCity)
-		m_city = m.relatedCityData[city.id]
-		city.name = m_city.name
-		city.coords = m_city.coords
-		city.tradegood = m_city.tradegood
-		city.maxResources = copy m.maxResources
-		city.time = 1 * new Date()
-		city.currentResources = copy m.currentResources
-		city.resourceProduction = m.resourceProduction
+		city                     = config.getCity(m.relatedCityData.selectedCity)
+		m_city                   = m.relatedCityData[city.id]
+		city.name                = m_city.name
+		city.coords              = m_city.coords
+		city.tradegood           = m_city.tradegood
+		city.maxResources        = copy m.maxResources
+		city.time                = 1 * new Date()
+		city.currentResources    = copy m.currentResources
+		city.resourceProduction  = m.resourceProduction
 		city.tradegoodProduction = m.tradegoodProduction
-		city.wineSpendings = m.wineSpendings
+		city.wineSpendings       = m.wineSpendings
 
 	# console.log c
 	config.save()
@@ -132,18 +132,18 @@ updateGlobalData = (config, domain, data)->
 	city = config.getCity 'city_' + bg.id
 	# console.log city
 	for b in bg.position
-		building = city.getBuilding b.building
+		building        = city.getBuilding b.building
 		building.isBusy = b.isBusy
-		building.level = b.level
-		building.name = b.name
+		building.level  = b.level
+		building.name   = b.name
 	# console.log 'after buildings update:', city
-	m = data.headerData
-	city.maxResources = copy m.maxResources
-	city.time = 1 * new Date()
-	city.currentResources = copy m.currentResources
-	city.resourceProduction = m.resourceProduction
+	m                        = data.headerData
+	city.maxResources        = copy m.maxResources
+	city.time                = 1 * new Date()
+	city.currentResources    = copy m.currentResources
+	city.resourceProduction  = m.resourceProduction
 	city.tradegoodProduction = m.tradegoodProduction
-	city.wineSpendings = m.wineSpendings
+	city.wineSpendings       = m.wineSpendings
 
 registerUpdateData = (domain)->
 	unsafeWindow.$(unsafeWindow.document).ajaxSuccess (event, xhr, settings)->
@@ -180,13 +180,12 @@ render = (domain)->
 				else if input < 0
 					value
 	window.AppController = (scope, $timeout)->
-		scope.show_buildings = true
-		scope.domain = domain
-		scope.BUILDINGS = BUILDINGS
+		scope.show_buildings  = true
+		scope.domain          = domain
+		scope.BUILDINGS       = BUILDINGS
 		scope.TRADEGOOD_NAMES = TRADEGOOD_NAMES
-		scope.cities = c.cities.map (city_props)->
-			new City city_props
-		scope.time = 1 * new Date()
+		scope.cities          = c.cities.map (city_props)-> new City city_props
+		scope.time            = 1 * new Date()
 		window.setInterval ->
 			scope.$apply ->
 				scope.time = 1 * new Date()
