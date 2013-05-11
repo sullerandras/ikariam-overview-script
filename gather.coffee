@@ -9,6 +9,9 @@ class Config
 	save: ->
 		GM_setValue 'config', JSON.stringify @config
 	getCity: (city_id)->
+		if ''+city_id != ''+parseInt(city_id)
+			throw new Error 'city_id must be an integer'
+		city_id = parseInt city_id
 		for c, i in @config.cities
 			if c.id == city_id
 				city = new City c
@@ -18,26 +21,41 @@ class Config
 		@config.cities.push city
 		city
 
+	addCities: (relatedCityData)->
+		city_ids = []
+		for key, value of relatedCityData
+			if key.substr(0, 5) == 'city_' && value.relationship == 'ownCity'
+				city_ids.push parseInt key.substr 5
+		ids = city_ids.sort( (a,b)-> a - b )
+		for id in ids
+			data = relatedCityData['city_'+id]
+			city = @getCity id
+			city.coords = data.coords
+			city.name = data.name
+			city.tradegood = data.tradegood
+
 class City
 	constructor: (props)->
 		$.extend @, props
 	tradegood_name: ->
 		TRADEGOOD_NAMES[@tradegood]
 	percent_full: (resource_id, time)->
-		Math.floor @resource_amount(resource_id, time) * 100 / @maxResources[resource_id]
+		if @maxResources
+			Math.floor @resource_amount(resource_id, time) * 100 / @maxResources[resource_id]
 	delta_per_hour: (resource_id, time)->
 		spending_per_hour = if ''+resource_id == '1' then @wineSpendings else 0
 		@production_for_resource(resource_id) * 3600 - spending_per_hour
 	time_to_full: (resource_id, time)->
-		current = @resource_amount resource_id, time
-		max = @maxResources[resource_id]
-		delta_per_hour = @delta_per_hour resource_id, time
-		if delta_per_hour > 0
-			Math.floor((max - current) / delta_per_hour)
-		else if delta_per_hour < 0
-			Math.floor(current / delta_per_hour)
-		else
-			0
+		if @maxResources
+			current = @resource_amount resource_id, time
+			max = @maxResources[resource_id]
+			delta_per_hour = @delta_per_hour resource_id, time
+			if delta_per_hour > 0
+				Math.floor((max - current) / delta_per_hour)
+			else if delta_per_hour < 0
+				Math.floor(current / delta_per_hour)
+			else
+				0
 	progress_bar_tooltip: (resource_id, time)->
 		ttf = @time_to_full resource_id, time
 		if ttf > 0
@@ -64,10 +82,11 @@ class City
 		else
 			0
 	resource_amount: (resource_id, time)->
-		delta_t = (time - @time) / 1000.0
-		increase = delta_t * @production_for_resource(resource_id)
-		amount = Math.round @currentResources[resource_id] + increase
-		Math.min amount, @maxResources[resource_id]
+		if @currentResources && @maxResources
+			delta_t = (time - @time) / 1000.0
+			increase = delta_t * @production_for_resource(resource_id)
+			amount = Math.round @currentResources[resource_id] + increase
+			Math.min amount, @maxResources[resource_id]
 	getBuilding: (building_id)->
 		if !@buildings
 			@buildings = {}
@@ -110,9 +129,12 @@ gatherData = (domain)->
 	if m.freeTransporters
 		c.freeTransporters = m.freeTransporters
 
+	if m.relatedCityData
+		config.addCities m.relatedCityData
+
 	if m.isOwnCity
-		city                     = config.getCity(m.relatedCityData.selectedCity)
-		m_city                   = m.relatedCityData[city.id]
+		city                     = config.getCity(m.relatedCityData.selectedCity.substr 5)
+		m_city                   = m.relatedCityData['city_'+city.id]
 		city.name                = m_city.name
 		city.coords              = m_city.coords
 		city.tradegood           = m_city.tradegood
@@ -129,7 +151,7 @@ gatherData = (domain)->
 updateGlobalData = (config, domain, data)->
 	console.log 'update:', data
 	bg = data.backgroundData
-	city = config.getCity 'city_' + bg.id
+	city = config.getCity bg.id
 	# console.log city
 	for b in bg.position
 		building        = city.getBuilding b.building
@@ -186,12 +208,12 @@ render = (domain)->
 		scope.TRADEGOOD_NAMES = TRADEGOOD_NAMES
 		scope.cities          = c.cities.map (city_props)-> new City city_props
 		scope.time            = 1 * new Date()
-		window.setInterval ->
-			scope.$apply ->
-				scope.time = 1 * new Date()
-				# scope.cities = new Config().config.cities.map (city_props)->
-				# 	new City city_props
-		, 5000
+		# window.setInterval ->
+		# 	scope.$apply ->
+		# 		scope.time = 1 * new Date()
+		# 		# scope.cities = new Config().config.cities.map (city_props)->
+		# 		# 	new City city_props
+		# , 5000
 	window.AppController.$inject = ['$scope', '$timeout']
 	angular.bootstrap document, ['MyApp']
 
